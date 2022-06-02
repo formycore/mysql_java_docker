@@ -37,8 +37,8 @@ docker rm -f $(docker ps -a -q)
 docker rmi -f $(docker images -q)
 rm -rf target
 docker build -t spring_docker .
-docker run --name mysql_docker -d -p 6603:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_PASSWORD=root -e MYSQL_DATABASE=demo mysql
+docker run --name mysql_docker -d -p 6603:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_PASSWORD=root -e MYSQL_DATABASE=demo mysql:5.7
 docker ps -a
 read -p "Press enter to continue"
 docker exec -i mysql_docker mysql -uroot -proot demo < demo.sql
-docker run -t --link mysql_docker:mysql -p 8082:8082 spring_docker
+docker run -t --link mysql_docker:mysql -p 8080:8080 spring_docker
