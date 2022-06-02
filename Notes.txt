@@ -1,0 +1,44 @@
+https://github.com/ksmidhunkrishna/spring-boot-docker
+
+-- now we need to run with mysql:5.7
+-- last one run on the port 8080
+
+
+docker build -t spring_docker .
+docker run --name mysql_docker -d -p 6603:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_PASSWORD=root -e MYSQL_DATABASE=demo mysql
+docker exec -it mysql_docker bash
+-----
+under the container
+mysql -uroot -proot
+show databases;
+use demo;
+show tables
+CTRL P+Q
+---------------
+under main 
+docker exec -i mysql_docker mysql -uroot -proot demo < demo.sql
+docker exec -it mysql_docker bash
+---------------
+under container
+mysql -uroot -proot
+show databases;
+use demo;
+show tables
+-- here we get the tables
+-----------------
+under main
+docker run -t --link mysql_docker:mysql -p 8080:8080 spring_docker
+
+
+--------------------------------------------------------------
+#!/usr/bin/bash
+mvn clean install
+docker rm -f $(docker ps -a -q)
+docker rmi -f $(docker images -q)
+rm -rf target
+docker build -t spring_docker .
+docker run --name mysql_docker -d -p 6603:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_PASSWORD=root -e MYSQL_DATABASE=demo mysql
+docker ps -a
+read -p "Press enter to continue"
+docker exec -i mysql_docker mysql -uroot -proot demo < demo.sql
+docker run -t --link mysql_docker:mysql -p 8082:8082 spring_docker
